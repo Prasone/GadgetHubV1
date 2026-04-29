@@ -1,0 +1,122 @@
+{
+  "timestamp": "2025-04-29T00:00:00Z",
+  "version": "1.0",
+  "description": "Default backup data untuk GadgetHub. Gunakan untuk restore di device lain.",
+  "products": [
+    {
+      "id": "GH-001",
+      "name": "iPhone 15 Pro Max",
+      "brand": "Apple",
+      "price": 21499000,
+      "originalPrice": 23999000,
+      "discount": 10,
+      "image": "📱",
+      "images": [
+        "https://via.placeholder.com/400?text=iPhone+15+Pro+Max+1",
+        "https://via.placeholder.com/400?text=iPhone+15+Pro+Max+2"
+      ],
+      "videoUrl": "https://youtu.be/M0au92yebLQ?si=ZD3_7t5dil1xqVdI",
+      "color": "#1a1a2e",
+      "status": "ready",
+      "stock": 5,
+      "specs": {
+        "layar": "6.7\" Super Retina XDR OLED",
+        "prosesor": "A17 Pro Bionic",
+        "ram": "8GB",
+        "storage": "256GB",
+        "kamera": "48MP + 12MP + 12MP",
+        "baterai": "4422 mAh",
+        "os": "iOS 17",
+        "warna": "Titanium Natural"
+      },
+      "desc": "Rasakan pengalaman smartphone masa depan dengan iPhone 15 Pro Max—desain paling premium & powerful dari Apple!",
+      "sales": 24,
+      "isNew": true
+    },
+    {
+      "id": "GH-002",
+      "name": "Samsung Galaxy S24 Ultra",
+      "brand": "Samsung",
+      "price": 19999000,
+      "originalPrice": 19999000,
+      "discount": 0,
+      "image": "📲",
+      "images": ["https://via.placeholder.com/400?text=Samsung+S24+Ultra+1"],
+      "videoUrl": "https://youtu.be/M0au92yebLQ?si=ZD3_7t5dil1xqVdI",
+      "color": "#0d1b2a",
+      "status": "ready",
+      "stock": 3,
+      "specs": {
+        "layar": "6.8\" Dynamic AMOLED 2X",
+        "prosesor": "Snapdragon 8 Gen 3",
+        "ram": "12GB",
+        "storage": "256GB",
+        "kamera": "200MP + 12MP + 10MP + 50MP",
+        "baterai": "5000 mAh",
+        "os": "Android 14",
+        "warna": "Titanium Black"
+      },
+      "desc": "Dapatkan pengalaman flagship terbaik dengan Samsung Galaxy S24 Ultra!",
+      "sales": 18,
+      "isNew": true
+    }
+  ],
+  "sales": [
+    {
+      "date": "2025-01",
+      "revenue": 45000000,
+      "orders": 12
+    },
+    {
+      "date": "2025-02",
+      "revenue": 62000000,
+      "orders": 17
+    },
+    {
+      "date": "2025-03",
+      "revenue": 55000000,
+      "orders": 14
+    },
+    {
+      "date": "2025-04",
+      "revenue": 78000000,
+      "orders": 21
+    },
+    {
+      "date": "2025-05",
+      "revenue": 91000000,
+      "orders": 25
+    },
+    {
+      "date": "2025-06",
+      "revenue": 83000000,
+      "orders": 23
+    },
+    {
+      "date": "2025-07",
+      "revenue": 110000000,
+      "orders": 31
+    }
+  ],
+  "settings": {
+    "waNumber": "6281234567890",
+    "storeName": "GadgetHub",
+    "tagline": "Premium Smartphone Store"
+  },
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin GadgetHub",
+      "email": "admin@gadgethub.id",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "name": "Budi Santoso",
+      "email": "budi@email.com",
+      "password": "user123",
+      "role": "user"
+    }
+  ]
+}

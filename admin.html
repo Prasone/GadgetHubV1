@@ -264,15 +264,48 @@
               class="chart-title"
               style="margin-bottom: 16px; font-size: 0.85rem"
             >
-              Data Management
+              📦 Backup & Restore Data
             </div>
+            <p style="font-size: 0.78rem; color: var(--text3); margin-bottom: 12px">
+              Export data untuk menyimpan backup, atau import untuk mengembalikan dari backup di device lain.
+            </p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap">
-              <button class="btn btn-ghost" onclick="resetToDefault()">
-                Reset ke Default
+              <button class="btn btn-primary btn-sm" onclick="exportData()">
+                ⬇️ Export Data
               </button>
-              <button class="btn btn-danger" onclick="clearAllData()">
-                Hapus Semua Data
+              <button class="btn btn-primary btn-sm" id="import-btn-trigger" onclick="document.getElementById('import-file-input').click()">
+                ⬆️ Import Data
               </button>
+              <input type="file" id="import-file-input" accept=".json" style="display: none" onchange="handleFileImport(event)">
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border)">
+              <div
+                class="chart-title"
+                style="margin-bottom: 12px; font-size: 0.85rem"
+              >
+                💾 Auto-Backup History
+              </div>
+              <div id="backup-history-list" style="font-size: 0.78rem; color: var(--text3)">
+                <p>Loading...</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border)">
+              <div
+                class="chart-title"
+                style="margin-bottom: 16px; font-size: 0.85rem"
+              >
+                ⚠️ Data Management
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                <button class="btn btn-ghost btn-sm" onclick="resetToDefault()">
+                  Reset ke Default
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="clearAllData()">
+                  Hapus Semua Data
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -1186,8 +1219,53 @@ function updateWhatsAppButtons() {
         }
       }
 
+      // ---- IMPORT FILE HANDLER ----
+      function handleFileImport(event) {
+        const file = event.target.files[0];
+        if (file) {
+          importData(file).catch(err => {
+            console.error("Import error:", err);
+          });
+        }
+        // Reset input
+        event.target.value = "";
+      }
+
+      // ---- RENDER AUTO-BACKUP HISTORY ----
+      function renderBackupHistory() {
+        const backups = getAutoBackups();
+        const container = document.getElementById("backup-history-list");
+        
+        if (!backups || backups.length === 0) {
+          container.innerHTML = '<p style="color: var(--text3)">Belum ada backup otomatis</p>';
+          return;
+        }
+
+        container.innerHTML = `
+          <div style="max-height: 200px; overflow-y: auto; background: var(--surface2); padding: 8px; border-radius: 6px;">
+            ${backups.map((b, i) => {
+              const date = new Date(b.timestamp);
+              const timeStr = date.toLocaleString('id-ID');
+              return `
+                <div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div style="font-size: 0.8rem; font-weight: 500">${timeStr}</div>
+                    <div style="font-size: 0.7rem; color: var(--text3)">${b.products.length} produk</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm" onclick="restoreFromAutoBackup(${i})" style="padding: 4px 8px; font-size: 0.75rem">
+                    Pulihkan
+                  </button>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         checkAccess();
+        // Update backup history after page loads
+        setTimeout(() => renderBackupHistory(), 500);
       });
     </script>
   </body>

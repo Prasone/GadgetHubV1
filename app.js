@@ -325,6 +325,19 @@ function initApp() {
   });
 }
 
+// ---- LOAD DATA FROM JSON (Fallback/Cloud) ----
+async function loadDataFromJSON() {
+  try {
+    const response = await fetch('data.json');
+    if (!response.ok) throw new Error('Failed to load data.json');
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.warn("Could not load data.json:", err);
+    return null;
+  }
+}
+
 // ---- FORMAT ----
 function formatRp(n) {
   return "Rp " + Number(n).toLocaleString("id-ID");
@@ -539,6 +552,154 @@ function deleteProduct(id) {
   GH.products = GH.products.filter((p) => p.id !== id);
   saveProducts();
 }
+
+// ---- SETTINGS & SYNC ----
+function saveSettings(settings) {
+  store.set("gh_settings", { ...store.get("gh_settings", {}), ...settings });
+  GH.waNumber = store.get("gh_settings").waNumber || GH.waNumber;
+}
+
+function getSettings() {
+  return store.get("gh_settings", {});
+}
+
+// ---- EXPORT/IMPORT & BACKUP ----
+function exportData() {
+  const backupData = {
+    timestamp: new Date().toISOString(),
+    version: "1.0",
+    products: GH.products,
+    sales: GH.sales,
+    settings: store.get("gh_settings", {}),
+    users: GH.users,
+  };
+  
+  const dataStr = JSON.stringify(backupData, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `gadgethub-backup-${new Date().getTime()}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  toast("✅ Data berhasil diunduh!", "success");
+}
+
+function importData(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const backupData = JSON.parse(e.target.result);
+        
+        // Validate backup format
+        if (!backupData.products || !backupData.sales) {
+          throw new Error("Format backup tidak valid");
+        }
+        
+        // Restore all data
+        GH.products = backupData.products || GH.defaultProducts;
+        GH.sales = backupData.sales || GH.defaultSales;
+        GH.users = backupData.users || GH.users;
+        
+        store.set("gh_products", GH.products);
+        store.set("gh_sales", GH.sales);
+        store.set("gh_users", GH.users);
+        
+        if (backupData.settings) {
+          saveSettings(backupData.settings);
+        }
+        
+        toast("✅ Data berhasil diimpor! Halaman akan dimuat ulang...", "success");
+        setTimeout(() => location.reload(), 1500);
+        resolve(true);
+      } catch (err) {
+        toast(`❌ Gagal import: ${err.message}`, "error");
+        reject(err);
+      }
+    };
+    reader.onerror = () => {
+      toast("❌ Gagal membaca file", "error");
+      reject(new Error("File read error"));
+    };
+    reader.readAsText(file);
+  });
+}
+
+// ---- AUTO-BACKUP (Setiap perubahan) ----
+function autoBackupData() {
+  const backupKey = "gh_backup_auto";
+  const backups = store.get(backupKey, []);
+  
+  // Keep only last 5 backups
+  if (backups.length >= 5) {
+    backups.shift();
+  }
+  
+  backups.push({
+    timestamp: new Date().toISOString(),
+    products: GH.products,
+    sales: GH.sales,
+    settings: store.get("gh_settings", {}),
+  });
+  
+  store.set(backupKey, backups);
+}
+
+function restoreFromAutoBackup(index) {
+  const backupKey = "gh_backup_auto";
+  const backups = store.get(backupKey, []);
+  
+  if (index >= 0 && index < backups.length) {
+    const backup = backups[index];
+    GH.products = backup.products;
+    GH.sales = backup.sales;
+    store.set("gh_products", GH.products);
+    store.set("gh_sales", GH.sales);
+    if (backup.settings) saveSettings(backup.settings);
+    toast("✅ Data dipulihkan dari backup otomatis", "success");
+    setTimeout(() => location.reload(), 1000);
+    return true;
+  }
+  return false;
+}
+
+function getAutoBackups() {
+  return store.get("gh_backup_auto", []);
+}
+
+// Trigger auto-backup setiap kali produk berubah
+const originalSaveProducts = saveProducts;
+saveProducts = function() {
+  originalSaveProducts();
+  autoBackupData();
+};
+
+// ---- CLOUD SYNC (Optional - Firebase/Supabase) ----
+// Untuk production, tambahkan Firebase atau Supabase di sini
+// Contoh struktur:
+/*
+async function syncToCloud() {
+  try {
+    // POST ke backend: /api/backup
+    const response = await fetch('/api/backup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        products: GH.products,
+        sales: GH.sales,
+        settings: store.get("gh_settings", {}),
+      })
+    });
+    if (response.ok) toast("☁️ Data tersinkronisasi ke cloud", "success");
+  } catch (err) {
+    console.error("Cloud sync error:", err);
+  }
+}
+
+// Sync setiap 5 menit
+setInterval(syncToCloud, 5 * 60 * 1000);
+*/
 
 // ---- SHARED MODAL CLOSE ----
 document.addEventListener("DOMContentLoaded", () => {
