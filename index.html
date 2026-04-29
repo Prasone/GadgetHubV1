@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GadgetHub — Premium Smartphone Store</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="homepage.css" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+      <a href="index.html" class="nav-logo">
+        <img src="/testlogo.png" alt="logo" class="nav-logo-img" />
+        Gadget<span>Hub</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Beranda</a></li>
+        <li><a href="products.html">Produk</a></li>
+        <li><a href="#about">Tentang</a></li>
+        <li><a href="#contact">Kontak</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="products.html" class="btn btn-ghost btn-sm">Lihat Produk</a>
+        <button
+          class="btn btn-primary btn-sm"
+          id="nav-login-btn"
+          onclick="openLoginModal()"
+        >
+          Masuk
+        </button>
+        <div
+          class="user-avatar-wrap"
+          id="nav-user-wrap"
+          style="
+            display: none;
+            position: relative;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <span
+            id="nav-user-name"
+            style="font-size: 0.82rem; color: var(--text2); font-weight: 500"
+          ></span>
+          <div class="user-avatar" id="nav-avatar" onclick="toggleDropdown()">
+            <span id="nav-user-initial">U</span>
+          </div>
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="products.html" class="dropdown-item">🛍️ Produk</a>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item danger" onclick="logout()">Keluar</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-noise"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-grid-lines"></div>
+
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-kicker">
+            <span class="kicker-dot"></span>
+            #1 Toko Smartphone Terpercaya Indonesia
+          </div>
+          <h1 class="hero-title">
+            Teknologi Terbaik<br />
+            Untuk Kamu <em>Sekarang</em>
+          </h1>
+          <p class="hero-desc">
+            GadgetHub menghadirkan smartphone premium pilihan dengan harga
+            kompetitif, garansi resmi, dan pengiriman ke seluruh Indonesia.
+          </p>
+          <div class="hero-actions">
+            <a href="products.html" class="btn btn-primary btn-lg"
+              >Belanja Sekarang</a
+            >
+            <a href="#video" class="btn btn-ghost btn-lg">Tonton Video</a>
+          </div>
+          <div class="hero-stats">
+            <div>
+              <div class="hero-stat-num">500+</div>
+              <div class="hero-stat-label">Produk tersedia</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">10K+</div>
+              <div class="hero-stat-label">Pelanggan puas</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">4.9★</div>
+              <div class="hero-stat-label">Rating toko</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="phone-wrap">
+            <div class="phone-frame">
+              <div class="phone-screen">
+                <div class="phone-island"></div>
+                <div class="phone-body">
+                  <div class="phone-header">
+                    <span>09:41</span>
+                    <span class="phone-logo">GadgetHub</span>
+                  </div>
+                  <div class="phone-card">
+                    <div class="phone-card-emoji">📱</div>
+                    <div>
+                      <div class="phone-card-name">iPhone 15 Pro Max</div>
+                      <div class="phone-card-price">Rp 21.499.000</div>
+                    </div>
+                  </div>
+                  <div class="phone-card">
+                    <div class="phone-card-emoji">📲</div>
+                    <div>
+                      <div class="phone-card-name">Samsung S24 Ultra</div>
+                      <div class="phone-card-price">Rp 19.999.000</div>
+                    </div>
+                  </div>
+                  <div class="phone-card">
+                    <div class="phone-card-emoji">🔥</div>
+                    <div>
+                      <div class="phone-card-name">Xiaomi 14 Ultra</div>
+                      <div class="phone-card-price">Rp 14.999.000</div>
+                    </div>
+                  </div>
+                  <div class="phone-cta">PESAN VIA WHATSAPP →</div>
+                </div>
+              </div>
+              <div class="phone-glow-base"></div>
+            </div>
+            <div class="float-chip float-chip-1">
+              <strong>✅ Ready Stock</strong>
+              <span>Tersedia sekarang</span>
+            </div>
+            <div class="float-chip float-chip-2">
+              <strong>💬 WhatsApp</strong>
+              <span>Order mudah & cepat</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BRANDS -->
+    <section class="brands-section">
+      <p class="brands-label">Brand resmi yang tersedia</p>
+      <div class="brands-row">
+        <div class="brand-chip">Apple</div>
+        <div class="brand-chip">Samsung</div>
+        <div class="brand-chip">Xiaomi</div>
+        <div class="brand-chip">OPPO</div>
+        <div class="brand-chip">Vivo</div>
+        <div class="brand-chip">Google</div>
+        <div class="brand-chip">OnePlus</div>
+        <div class="brand-chip">Realme</div>
+        <div class="brand-chip">Nothing</div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+      <div class="features-header animate-in">
+        <div class="section-label">Keunggulan Kami</div>
+        <h2 class="section-title">Kenapa Pilih<br />GadgetHub?</h2>
+        <p class="section-subtitle">
+          Kami tidak sekadar menjual smartphone — kami memastikan kamu
+          mendapatkan produk terbaik dengan pengalaman belanja yang
+          menyenangkan.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card animate-in">
+          <div class="feature-icon-wrap">🏅</div>
+          <div class="feature-title">100% Original</div>
+          <div class="feature-desc">
+            Setiap produk dijamin original dengan garansi resmi distributor
+            Indonesia. Tidak ada barang KW.
+          </div>
+        </div>
+        <div class="feature-card animate-in delay-1">
+          <div class="feature-icon-wrap">💰</div>
+          <div class="feature-title">Harga Transparan</div>
+          <div class="feature-desc">
+            Harga sudah all-in tanpa biaya tersembunyi. Kami survey harga pasar
+            secara rutin untuk tetap kompetitif.
+          </div>
+        </div>
+        <div class="feature-card animate-in delay-2">
+          <div class="feature-icon-wrap">⚡</div>
+          <div class="feature-title">Respons Cepat</div>
+          <div class="feature-desc">
+            Tim kami merespons pertanyaan dalam waktu kurang dari 5 menit. Chat
+            WA aktif 08.00–22.00 WIB.
+          </div>
+        </div>
+        <div class="feature-card animate-in delay-1">
+          <div class="feature-icon-wrap">🛡️</div>
+          <div class="feature-title">Transaksi Aman</div>
+          <div class="feature-desc">
+            Lebih dari 10.000 pelanggan dengan tingkat kepuasan 98%. Bukti
+            pembayaran dan resi pengiriman transparan.
+          </div>
+        </div>
+        <div class="feature-card animate-in delay-2">
+          <div class="feature-icon-wrap">🚚</div>
+          <div class="feature-title">Kirim ke Seluruh RI</div>
+          <div class="feature-desc">
+            Bekerja sama dengan JNE, J&T, SiCepat, dan GoSend untuk pengiriman
+            aman ke seluruh nusantara.
+          </div>
+        </div>
+        <div class="feature-card animate-in delay-3">
+          <div class="feature-icon-wrap">🔧</div>
+          <div class="feature-title">After-Sales Support</div>
+          <div class="feature-desc">
+            Kami membantu klaim garansi, konsultasi perangkat, dan rekomendasi
+            aksesoris setelah transaksi.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about-section" id="about">
+      <div class="about-inner">
+        <div class="about-visual animate-in">
+          <div class="about-main-card">
+            <div class="about-card-label">Est. 2019 · Jakarta</div>
+            <div class="about-card-title">5 Tahun Melayani<br />Indonesia</div>
+            <div class="about-card-sub">
+              Dari Jakarta, kami telah melayani ribuan pelanggan di seluruh
+              nusantara dengan standar kualitas terbaik dan harga yang
+              kompetitif.
+            </div>
+            <div class="stats-row">
+              <div class="stat-mini">
+                <div class="stat-mini-num">10K+</div>
+                <div class="stat-mini-label">Pelanggan</div>
+              </div>
+              <div class="stat-mini">
+                <div class="stat-mini-num">4.9</div>
+                <div class="stat-mini-label">Rating</div>
+              </div>
+              <div class="stat-mini">
+                <div class="stat-mini-num">98%</div>
+                <div class="stat-mini-label">Puas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-text animate-in delay-1">
+          <div class="section-label">Tentang GadgetHub</div>
+          <h2 class="section-title">Toko Smartphone<br />Terpercaya</h2>
+          <div style="height: 20px"></div>
+          <p>
+            GadgetHub lahir dari passion terhadap teknologi dan keinginan untuk
+            menghadirkan akses produk smartphone premium kepada masyarakat
+            Indonesia dengan harga kompetitif.
+          </p>
+          <p>
+            Kami bermitra langsung dengan distributor resmi dari berbagai brand
+            ternama, memastikan setiap produk yang kami jual adalah 100%
+            original dengan garansi resmi Indonesia.
+          </p>
+          <div class="features-list">
+            <div class="feat-row">
+              <span class="feat-emoji">🔒</span>
+              <div class="feat-row-text">
+                <strong>Garansi Resmi</strong> — Semua produk bergaransi resmi
+                distributor
+              </div>
+            </div>
+            <div class="feat-row">
+              <span class="feat-emoji">💬</span>
+              <div class="feat-row-text">
+                <strong>Order via WhatsApp</strong> — Proses mudah langsung
+                lewat WA
+              </div>
+            </div>
+            <div class="feat-row">
+              <span class="feat-emoji">🚚</span>
+              <div class="feat-row-text">
+                <strong>Free Ongkir</strong> — Gratis ongkir ke seluruh
+                Indonesia
+              </div>
+            </div>
+            <div class="feat-row">
+              <span class="feat-emoji">↩️</span>
+              <div class="feat-row-text">
+                <strong>Easy Return</strong> — Tukar unit 7 hari jika ada
+                masalah
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIDEO -->
+    <section class="video-section" id="video">
+      <div class="video-header animate-in">
+        <div class="section-label" style="text-align: center">Video Profil</div>
+        <h2 class="section-title" style="text-align: center">
+          Kenali Lebih Dekat GadgetHub
+        </h2>
+        <p class="section-subtitle" style="margin: 12px auto 0">
+          Saksikan bagaimana kami berkomitmen memberikan pengalaman belanja
+          smartphone terbaik untukmu.
+        </p>
+      </div>
+
+      <div class="video-frame animate-in delay-2">
+        <div class="video-placeholder" id="video-placeholder">
+          <div class="play-btn" onclick="playVideo()" title="Play Video">▶</div>
+          <h3>GadgetHub — Company Profile 2024</h3>
+          <p>Klik untuk menonton video profil perusahaan kami</p>
+        </div>
+      </div>
+
+      <div class="video-actions animate-in delay-3">
+        <a href="products.html" class="btn btn-primary btn-lg"
+          >Belanja Sekarang</a
+        >
+        <a href="#contact" class="btn btn-ghost btn-lg">Hubungi Kami</a>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="cta-inner animate-in">
+        <div class="section-label" style="text-align: center">
+          Siap Berbelanja?
+        </div>
+        <h2>Temukan Smartphone Impianmu Sekarang</h2>
+        <p>
+          Jelajahi ratusan produk pilihan dengan harga terbaik dan garansi
+          resmi. Pesan mudah via WhatsApp!
+        </p>
+        <div class="cta-actions">
+          <a href="products.html" class="btn btn-primary btn-lg"
+            >Lihat Semua Produk</a
+          >
+          <a
+            href="https://wa.me/6281234567890"
+            target="_blank"
+            class="btn btn-success btn-lg"
+            >Chat WhatsApp</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <img src="/testlogo.png" alt="logo" class="nav-logo-img" />
+            Gadget<span>Hub</span>
+          </a>
+          <p>
+            Marketplace smartphone premium terpercaya di Indonesia. Hadirkan
+            teknologi terbaik ke tanganmu.
+          </p>
+          <div style="display: flex; gap: 8px; margin-top: 16px">
+            <a
+              href="https://wa.me/6281234567890"
+              target="_blank"
+              class="btn btn-success btn-sm"
+              >WhatsApp</a
+            >
+            <a href="#" class="btn btn-ghost btn-sm">Instagram</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigasi</h4>
+          <a href="index.html">Beranda</a>
+          <a href="products.html">Produk</a>
+          <a href="#about">Tentang Kami</a>
+        </div>
+        <div class="footer-col">
+          <h4>Brand</h4>
+          <a href="products.html">Apple iPhone</a>
+          <a href="products.html">Samsung Galaxy</a>
+          <a href="products.html">Xiaomi</a>
+          <a href="products.html">OPPO & Vivo</a>
+        </div>
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <a href="#">📍 Jakarta, Indonesia</a>
+          <a href="https://wa.me/6281234567890" target="_blank"
+            >WA: 0812-3456-7890</a
+          >
+          <a href="mailto:hello@gadgethub.id">hello@gadgethub.id</a>
+          <a href="#">08.00 – 22.00 WIB</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2024 GadgetHub. All rights reserved.</span>
+        <span>nama kemlompok</span>
+      </div>
+    </footer>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="modal-login">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 id="auth-modal-title">Masuk ke GadgetHub</h2>
+          <button class="modal-close" onclick="closeModal('modal-login')">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <div
+            style="
+              display: flex;
+              gap: 4px;
+              margin-bottom: 24px;
+              background: var(--surface2);
+              padding: 4px;
+              border-radius: var(--r-sm);
+            "
+          >
+            <button
+              class="btn"
+              id="tab-login"
+              onclick="switchTab('login')"
+              style="
+                flex: 1;
+                justify-content: center;
+                background: var(--surface3);
+                color: var(--text);
+                padding: 10px;
+                border-radius: 6px;
+              "
+            >
+              Masuk
+            </button>
+            <button
+              class="btn"
+              id="tab-register"
+              onclick="switchTab('register')"
+              style="
+                flex: 1;
+                justify-content: center;
+                background: transparent;
+                color: var(--text2);
+                padding: 10px;
+              "
+            >
+              Daftar
+            </button>
+          </div>
+          <form id="login-form">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                id="login-email"
+                class="form-input"
+                placeholder="email@kamu.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                id="login-password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="width: 100%; justify-content: center; padding: 13px"
+            >
+              Masuk →
+            </button>
+            <div
+              style="
+                margin-top: 16px;
+                padding: 13px;
+                background: var(--surface2);
+                border-radius: var(--r-sm);
+                font-size: 0.8rem;
+                color: var(--text2);
+                border: 1px solid var(--border);
+              "
+            >
+              <strong
+                style="color: var(--text); display: block; margin-bottom: 4px"
+                >Demo Akun</strong
+              >
+              👑 Admin: admin@gadgethub.id / admin123<br />
+              👤 User: budi@email.com / user123
+            </div>
+          </form>
+          <form id="register-form" style="display: none">
+            <div class="form-group">
+              <label class="form-label">Nama Lengkap</label>
+              <input
+                type="text"
+                id="reg-name"
+                class="form-input"
+                placeholder="Nama Lengkap"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                id="reg-email"
+                class="form-input"
+                placeholder="email@kamu.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                id="reg-password"
+                class="form-input"
+                placeholder="Min. 6 karakter"
+                minlength="6"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="width: 100%; justify-content: center; padding: 13px"
+            >
+              Buat Akun →
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="app.js"></script>
+    <script>
+      function toggleDropdown() {
+        document.getElementById("user-dropdown").classList.toggle("open");
+      }
+      function switchTab(tab) {
+        const lf = document.getElementById("login-form");
+        const rf = document.getElementById("register-form");
+        const tl = document.getElementById("tab-login");
+        const tr = document.getElementById("tab-register");
+        const title = document.getElementById("auth-modal-title");
+        if (tab === "login") {
+          lf.style.display = "";
+          rf.style.display = "none";
+          tl.style.cssText =
+            "flex:1;justify-content:center;background:var(--surface3);color:var(--text);padding:10px;border-radius:6px;";
+          tr.style.cssText =
+            "flex:1;justify-content:center;background:transparent;color:var(--text2);padding:10px;";
+          title.textContent = "Masuk ke GadgetHub";
+        } else {
+          lf.style.display = "none";
+          rf.style.display = "";
+          tr.style.cssText =
+            "flex:1;justify-content:center;background:var(--surface3);color:var(--text);padding:10px;border-radius:6px;";
+          tl.style.cssText =
+            "flex:1;justify-content:center;background:transparent;color:var(--text2);padding:10px;";
+          title.textContent = "Buat Akun Baru";
+        }
+      }
+      function playVideo() {
+        const youtubeId = "dQw4w9WgXcQ";
+        const placeholder = document.getElementById("video-placeholder");
+        const wrap = placeholder.parentElement;
+        placeholder.remove();
+        const iframe = document.createElement("iframe");
+        iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
+        iframe.allow = "autoplay; fullscreen";
+        iframe.style.cssText =
+          "width:100%;height:100%;border:none;display:block;";
+        wrap.appendChild(iframe);
+      }
+    </script>
+  </body>
+</html>

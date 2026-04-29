@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produk — GadgetHub</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="products.css"
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="index.html" class="nav-logo">
+    <img src="/testlogo.png" alt="logo" class="nav-logo-img">
+    Gadget<span>Hub</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="products.html" class="active">Produk</a></li>
+    <li><a href="index.html#about">Tentang</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-primary btn-sm" id="nav-login-btn" onclick="openLoginModal()">Masuk</button>
+    <div class="user-avatar-wrap" id="nav-user-wrap" style="display:none; position:relative; align-items:center; gap:10px;">
+      <span id="nav-user-name" style="font-size:0.82rem; color:var(--text2); font-weight:500;"></span>
+      <div class="user-avatar" id="nav-avatar" onclick="toggleDropdown()">
+        <span id="nav-user-initial">U</span>
+      </div>
+      <div class="user-dropdown" id="user-dropdown">
+        <a href="index.html" class="dropdown-item">🏠 Beranda</a>
+        <div id="admin-link" style="display:none"><a href="admin.html" class="dropdown-item">⚙️ Dashboard Admin</a></div>
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-item danger" onclick="logout()">Keluar</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header-bar">
+  <div class="page-header-inner">
+    <div class="page-header-text">
+      <h1>Semua <span>Produk</span></h1>
+      <p>Temukan smartphone terbaik untukmu</p>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="search-input" placeholder="Cari nama atau brand...">
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filter-row">
+  <span class="filter-lbl">Brand</span>
+  <button class="chip active" onclick="filterBrand('all', this)">Semua</button>
+  <button class="chip" onclick="filterBrand('Apple', this)">Apple</button>
+  <button class="chip" onclick="filterBrand('Samsung', this)">Samsung</button>
+  <button class="chip" onclick="filterBrand('Xiaomi', this)">Xiaomi</button>
+  <button class="chip" onclick="filterBrand('OPPO', this)">OPPO</button>
+  <button class="chip" onclick="filterBrand('Vivo', this)">Vivo</button>
+  <button class="chip" onclick="filterBrand('Google', this)">Google</button>
+  <div class="filter-sep"></div>
+  <span class="filter-lbl">Status</span>
+  <button class="chip active" id="filter-status-all" onclick="filterStatus('all', this)">Semua</button>
+  <button class="chip" onclick="filterStatus('ready', this)">Ready Stock</button>
+  <button class="chip" onclick="filterStatus('po', this)">Pre-Order</button>
+</div>
+
+<!-- PRODUCTS -->
+<main class="products-body">
+  <div class="products-meta" id="products-count"></div>
+  <div class="products-grid" id="products-grid"></div>
+</main>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">
+        <img src="/testlogo.png" alt="logo" class="nav-logo-img">
+        Gadget<span>Hub</span>
+      </a>
+      <p>Marketplace smartphone premium terpercaya di Indonesia.</p>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success btn-sm">WhatsApp</a>
+        <a href="#" class="btn btn-ghost btn-sm">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <a href="index.html">Beranda</a>
+      <a href="products.html">Produk</a>
+    </div>
+    <div class="footer-col">
+      <h4>Brand</h4>
+      <a href="products.html">Apple</a>
+      <a href="products.html">Samsung</a>
+      <a href="products.html">Xiaomi</a>
+      <a href="products.html">OPPO & Vivo</a>
+    </div>
+    <div class="footer-col">
+      <h4>Kontak</h4>
+      <a href="#">📍 Jakarta</a>
+      <a href="https://wa.me/6281234567890" target="_blank">WA: 0812-3456-7890</a>
+      <a href="#">08.00 – 22.00 WIB</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 GadgetHub. All rights reserved.</span>
+    <span>Made with ❤️ in Indonesia</span>
+  </div>
+</footer>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-overlay" id="modal-product">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>Detail Produk</h2>
+      <button class="modal-close" onclick="closeModal('modal-product')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="prod-modal-grid" id="product-modal-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="auth-modal-title">Masuk ke GadgetHub</h2>
+      <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex; gap:4px; margin-bottom:24px; background:var(--surface2); padding:4px; border-radius:var(--r-sm);">
+        <button class="btn" id="tab-login" onclick="switchTab('login')" style="flex:1;justify-content:center;background:var(--surface3);color:var(--text);padding:10px;border-radius:6px;">Masuk</button>
+        <button class="btn" id="tab-register" onclick="switchTab('register')" style="flex:1;justify-content:center;background:transparent;color:var(--text2);padding:10px;">Daftar</button>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="email@kamu.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;">Masuk →</button>
+        <div style="margin-top:14px; padding:12px; background:var(--surface2); border-radius:var(--r-sm); font-size:0.78rem; color:var(--text2); border:1px solid var(--border);">
+          <strong style="color:var(--text); display:block; margin-bottom:3px;">Demo Akun</strong>
+          admin@gadgethub.id / admin123 &nbsp;·&nbsp; budi@email.com / user123
+        </div>
+      </form>
+      <form id="register-form" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap</label>
+          <input type="text" id="reg-name" class="form-input" placeholder="Nama Lengkap" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="email@kamu.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Min. 6 karakter" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;">Buat Akun →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="app.js"></script>
+<script>
+  let currentBrand = 'all';
+  let currentStatus = 'all';
+  let searchQuery = '';
+  let currentImageSlideIndex = 0;
+
+  // Extract YouTube video ID from various URL formats
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    try {
+      // Format: https://www.youtube.com/watch?v=ID or https://youtu.be/ID or youtu.be/ID?si=...
+      let videoId = '';
+      if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0].split('&')[0];
+      } else if (url.includes('youtube.com')) {
+        const urlObj = new URL(url);
+        videoId = urlObj.searchParams.get('v');
+      }
+      return videoId || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function toggleDropdown() {
+    document.getElementById('user-dropdown').classList.toggle('open');
+  }
+
+  function switchTab(tab) {
+    const lf = document.getElementById('login-form');
+    const rf = document.getElementById('register-form');
+    const tl = document.getElementById('tab-login');
+    const tr = document.getElementById('tab-register');
+    const title = document.getElementById('auth-modal-title');
+    if (tab === 'login') {
+      lf.style.display = ''; rf.style.display = 'none';
+      tl.style.cssText = 'flex:1;justify-content:center;background:var(--surface3);color:var(--text);padding:10px;border-radius:6px;';
+      tr.style.cssText = 'flex:1;justify-content:center;background:transparent;color:var(--text2);padding:10px;';
+      title.textContent = 'Masuk ke GadgetHub';
+    } else {
+      lf.style.display = 'none'; rf.style.display = '';
+      tr.style.cssText = 'flex:1;justify-content:center;background:var(--surface3);color:var(--text);padding:10px;border-radius:6px;';
+      tl.style.cssText = 'flex:1;justify-content:center;background:transparent;color:var(--text2);padding:10px;';
+      title.textContent = 'Buat Akun Baru';
+    }
+  }
+
+  function renderProducts() {
+    const grid = document.getElementById('products-grid');
+    const countEl = document.getElementById('products-count');
+    let filtered = GH.products.filter(p => {
+      const matchBrand = currentBrand === 'all' || p.brand === currentBrand;
+      const matchStatus = currentStatus === 'all' || p.status === currentStatus;
+      const matchSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery) || p.brand.toLowerCase().includes(searchQuery);
+      return matchBrand && matchStatus && matchSearch;
+    });
+    countEl.innerHTML = `Menampilkan <strong>${filtered.length}</strong> produk`;
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Produk tidak ditemukan</div><p>Coba ubah filter atau kata kunci pencarian</p></div>`;
+      return;
+    }
+    grid.innerHTML = filtered.map((p, i) => {
+      const isDiscounted = p.discount > 0;
+      const isSoldOut = p.status === 'sold';
+      const img = p.image && (p.image.startsWith('http') || p.image.startsWith('/'))
+        ? `<img src="${p.image}" alt="${p.name}">`
+        : p.image;
+      return `
+      <div class="product-card" style="animation-delay:${i * 0.04}s">
+        <div class="card-badges">
+          ${p.isNew ? '<span class="badge badge-new">NEW</span>' : ''}
+          ${isDiscounted ? `<span class="badge badge-sale">-${p.discount}%</span>` : ''}
+        </div>
+        <div class="card-image" style="background:${p.color || 'var(--surface2)'}">
+          ${img}
+        </div>
+        <div class="card-body">
+          <div class="card-brand">${p.brand}</div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-specs">
+            <span class="spec-pill">${p.specs.ram} RAM</span>
+            <span class="spec-pill">${p.specs.storage}</span>
+            <span class="spec-pill">${p.specs.prosesor.split(' ').slice(0,3).join(' ')}</span>
+          </div>
+          <div class="card-price-row">
+            <span class="card-price">${formatRp(p.price)}</span>
+            ${isDiscounted ? `<span class="card-original">${formatRp(p.originalPrice)}</span>` : ''}
+          </div>
+          <div class="card-footer">
+            <span class="badge ${p.status === 'ready' ? 'badge-ready' : p.status === 'po' ? 'badge-po' : 'badge-sold'}">
+              ${p.status === 'ready' ? 'Ready' : p.status === 'po' ? 'Pre-Order' : 'Sold Out'}
+            </span>
+            <span class="card-sales">🔥 ${p.sales || 0} terjual</span>
+          </div>
+          <div class="card-actions">
+            <button class="btn-detail" onclick="openProductDetail('${p.id}')">Detail</button>
+            <button class="btn-order" onclick="orderViaWA('${p.id}')" ${isSoldOut ? 'disabled' : ''}>
+              💬 Pesan WA
+            </button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function filterBrand(brand, el) {
+    currentBrand = brand;
+    document.querySelectorAll('.filter-row .chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    if (currentStatus !== 'all') {
+      const statusChips = ['Semua','Ready Stock','Pre-Order'];
+      document.querySelectorAll('.filter-row .chip').forEach(c => {
+        if (statusChips.includes(c.textContent.trim()) && c.textContent.trim() === (currentStatus === 'all' ? 'Semua' : currentStatus === 'ready' ? 'Ready Stock' : 'Pre-Order')) {
+          c.classList.add('active');
+        }
+      });
+    }
+    el.classList.add('active');
+    renderProducts();
+  }
+
+  function filterStatus(status, el) {
+    currentStatus = status;
+    document.querySelectorAll('.filter-row .chip').forEach(c => {
+      const t = c.textContent.trim();
+      if (['Semua','Ready Stock','Pre-Order'].includes(t)) c.classList.remove('active');
+    });
+    el.classList.add('active');
+    renderProducts();
+  }
+
+  function openProductDetail(id) {
+    const p = GH.products.find(pr => pr.id === id);
+    if (!p) return;
+    currentImageSlideIndex = 0;
+    const isDiscounted = p.discount > 0;
+    const saving = p.originalPrice - p.price;
+    const images = p.images && p.images.length > 0 ? p.images : [p.image];
+    const hasVideo = p.videoUrl && p.videoUrl.trim() !== '';
+
+    const content = document.getElementById('product-modal-content');
+    content.innerHTML = `
+      <div class="prod-modal-visual">
+        <div class="prod-visual-box" id="product-visual" style="background:${p.color || 'var(--surface2)'}">
+          <div class="carousel-container">
+            ${images.map((img, i) => `
+              <div class="carousel-slide ${i === 0 ? 'active' : ''}">
+                ${img.startsWith('http') ? `<img src="${img}" alt="${p.name}">` : img}
+              </div>
+            `).join('')}
+          </div>
+          ${images.length > 1 ? `
+            <button class="carousel-btn carousel-prev" onclick="slideImage('${p.id}', -1)">❮</button>
+            <button class="carousel-btn carousel-next" onclick="slideImage('${p.id}', 1)">❯</button>
+            <div class="carousel-dots">
+              ${images.map((_, i) => `<span class="dot ${i === 0 ? 'active' : ''}" onclick="goToSlide('${p.id}', ${i})"></span>`).join('')}
+            </div>
+          ` : ''}
+        </div>
+        ${hasVideo ? `<div style="margin-top:14px; border-radius:var(--r); overflow:hidden; border:1px solid var(--border);">
+          <iframe width="100%" height="200" src="${'https://www.youtube.com/embed/' + extractYouTubeId(p.videoUrl)}" style="border:none;display:block;" allowfullscreen></iframe>
+        </div>` : ''}
+      </div>
+      <div>
+        <div class="prod-modal-brand">${p.brand}</div>
+        <div class="prod-modal-name">${p.name}</div>
+        <div class="prod-modal-code">Kode: ${p.id}</div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          ${p.isNew ? '<span class="badge badge-new">NEW</span>' : ''}
+          <span class="badge ${p.status === 'ready' ? 'badge-ready' : p.status === 'po' ? 'badge-po' : 'badge-sold'}">
+            ${p.status === 'ready' ? 'Ready Stock' : p.status === 'po' ? 'Pre-Order' : 'Sold Out'}
+          </span>
+          ${isDiscounted ? `<span class="badge badge-sale">Diskon ${p.discount}%</span>` : ''}
+        </div>
+
+        <div class="price-block">
+          <span class="price-main">${formatRp(p.price)}</span>
+          ${isDiscounted ? `<span class="price-original">${formatRp(p.originalPrice)}</span>
+          <div class="price-save">Hemat ${formatRp(saving)}</div>` : ''}
+        </div>
+
+        <p class="modal-desc">${p.desc}</p>
+
+        <div class="divider"></div>
+        <div style="font-size:0.7rem;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">Spesifikasi</div>
+        <div class="specs-grid">
+          ${Object.entries(p.specs).map(([k, v]) => `
+            <div class="spec-row">
+              <span class="spec-key">${k.charAt(0).toUpperCase() + k.slice(1)}</span>
+              <span class="spec-val">${v}</span>
+            </div>
+          `).join('')}
+        </div>
+
+        ${p.status !== 'sold' ? `
+          <button class="btn btn-wa" onclick="orderViaWA('${p.id}')">💬 Pesan via WhatsApp</button>
+          <p style="font-size:0.72rem;color:var(--text3);text-align:center;margin-top:8px;">Template pesan otomatis akan terisi dengan kode & harga produk</p>
+        ` : `
+          <div style="text-align:center;padding:16px;background:var(--red-dim);border:1px solid rgba(244,63,94,0.2);border-radius:var(--r-sm);">
+            <span style="color:var(--red);font-size:0.875rem;font-weight:600;">Produk ini sedang tidak tersedia</span>
+          </div>
+        `}
+      </div>
+    `;
+    openModal('modal-product');
+  }
+
+  function slideImage(productId, direction) {
+    const p = GH.products.find(pr => pr.id === productId);
+    if (!p || !p.images || p.images.length <= 1) return;
+    currentImageSlideIndex = (currentImageSlideIndex + direction + p.images.length) % p.images.length;
+    updateCarousel();
+  }
+
+  function goToSlide(productId, index) {
+    currentImageSlideIndex = index;
+    updateCarousel();
+  }
+
+  function updateCarousel() {
+    document.querySelectorAll('.carousel-slide').forEach((slide, i) => slide.classList.toggle('active', i === currentImageSlideIndex));
+    document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentImageSlideIndex));
+  }
+
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    renderProducts();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (GH.currentUser?.role === 'admin') {
+      const al = document.getElementById('admin-link');
+      if (al) al.style.display = '';
+    }
+    renderProducts();
+  });
+</script>
+</body>
+</html>

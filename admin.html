@@ -1,0 +1,1194 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin — GadgetHub</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-icon">⚡</div>
+        Gadget<span>Hub</span>
+      </a>
+      <div
+        style="
+          font-size: 0.78rem;
+          color: var(--text3);
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+        "
+      >
+        Admin Dashboard
+      </div>
+      <div class="nav-actions">
+        <a href="products.html" class="btn btn-ghost btn-sm">Lihat Toko</a>
+        <div
+          style="
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <span
+            id="nav-user-name"
+            style="font-size: 0.82rem; color: var(--text2); font-weight: 500"
+          ></span>
+          <div
+            class="user-avatar"
+            onclick="
+              document.getElementById('user-dropdown').classList.toggle('open')
+            "
+          >
+            <span id="nav-user-initial">A</span>
+          </div>
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-item danger" onclick="logout()">Keluar</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ACCESS DENIED -->
+    <div id="access-denied-screen" class="page-wrapper" style="display: none">
+      <div class="access-denied">
+        <div class="access-icon">🔒</div>
+        <h2>Akses Ditolak</h2>
+        <p>
+          Halaman ini hanya dapat diakses oleh Admin GadgetHub. Silakan login
+          dengan akun admin.
+        </p>
+        <button class="btn btn-primary btn-lg" onclick="openLoginModal()">
+          Login sebagai Admin
+        </button>
+        <a href="index.html" class="btn btn-ghost">← Kembali</a>
+      </div>
+    </div>
+
+    <!-- ADMIN LAYOUT -->
+    <div class="admin-layout" id="admin-content" style="display: none">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-section">Utama</div>
+        <button
+          class="sidebar-item active"
+          onclick="switchPage('overview', this)"
+        >
+          <span class="sidebar-icon">◧</span> Overview
+        </button>
+        <button class="sidebar-item" onclick="switchPage('products', this)">
+          <span class="sidebar-icon">📱</span> Produk
+          <span class="sidebar-badge" id="badge-count">0</span>
+        </button>
+
+        <div class="sidebar-section">Laporan</div>
+        <button class="sidebar-item" onclick="switchPage('sales', this)">
+          <span class="sidebar-icon">📈</span> Penjualan
+        </button>
+
+        <div class="sidebar-section">Sistem</div>
+        <button class="sidebar-item" onclick="switchPage('settings', this)">
+          <span class="sidebar-icon">⚙️</span> Pengaturan
+        </button>
+        <button
+          class="sidebar-item"
+          onclick="logout()"
+          style="color: var(--red); margin-top: auto"
+        >
+          <span class="sidebar-icon">→</span> Keluar
+        </button>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="admin-main">
+        <!-- OVERVIEW -->
+        <section id="page-overview" class="admin-section active">
+          <div class="page-head">
+            <div>
+              <div class="page-title">Overview</div>
+              <div class="page-subtitle" id="overview-greeting"></div>
+            </div>
+            <div
+              style="font-size: 0.78rem; color: var(--text3); font-weight: 500"
+              id="current-date"
+            ></div>
+          </div>
+          <div class="stats-grid" id="stats-grid"></div>
+          <div class="chart-section">
+            <div class="chart-card">
+              <div class="chart-head">
+                <div class="chart-title">Revenue Bulanan</div>
+                <span style="font-size: 0.72rem; color: var(--text3)"
+                  >7 bulan terakhir</span
+                >
+              </div>
+              <div class="bar-chart" id="revenue-chart"></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-head">
+                <div class="chart-title">Top Produk</div>
+              </div>
+              <div id="top-products-list"></div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-head">
+              <div class="chart-title">Ringkasan Stok</div>
+              <button
+                class="btn btn-ghost btn-sm"
+                onclick="switchPageBtn('products')"
+              >
+                Kelola →
+              </button>
+            </div>
+            <div id="product-summary"></div>
+          </div>
+        </section>
+
+        <!-- PRODUCTS -->
+        <section id="page-products" class="admin-section">
+          <div class="page-head">
+            <div>
+              <div class="page-title">Kelola Produk</div>
+              <div class="page-subtitle">Tambah, edit, dan hapus produk</div>
+            </div>
+            <button class="btn btn-primary" onclick="openAddProduct()">
+              + Tambah Produk
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produk</th>
+                  <th>Kode</th>
+                  <th>Harga</th>
+                  <th>Diskon</th>
+                  <th>Status</th>
+                  <th>Terjual</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SALES -->
+        <section id="page-sales" class="admin-section">
+          <div class="page-head">
+            <div>
+              <div class="page-title">Laporan Penjualan</div>
+              <div class="page-subtitle">Performa penjualan GadgetHub</div>
+            </div>
+          </div>
+          <div
+            class="stats-grid"
+            id="sales-stats-grid"
+            style="grid-template-columns: repeat(3, 1fr)"
+          ></div>
+          <div class="chart-card" style="margin-top: 16px">
+            <div class="chart-head">
+              <div class="chart-title">Pesanan per Bulan</div>
+            </div>
+            <div class="bar-chart" id="orders-chart"></div>
+          </div>
+          <div class="chart-card" style="margin-top: 16px">
+            <div class="chart-head">
+              <div class="chart-title">Riwayat Bulanan</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Bulan</th>
+                  <th>Pesanan</th>
+                  <th>Revenue</th>
+                  <th>Avg/Pesanan</th>
+                </tr>
+              </thead>
+              <tbody id="sales-table-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="page-settings" class="admin-section">
+          <div class="page-head">
+            <div>
+              <div class="page-title">Pengaturan</div>
+              <div class="page-subtitle">Konfigurasi toko GadgetHub</div>
+            </div>
+          </div>
+          <div class="chart-card" style="max-width: 560px">
+            <div class="chart-title" style="margin-bottom: 20px">
+              Pengaturan Toko
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Toko</label>
+              <input
+                type="text"
+                class="form-input"
+                value="GadgetHub"
+                id="setting-name"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nomor WhatsApp Admin</label>
+              <input
+                type="text"
+                class="form-input"
+                value="6281234567890"
+                id="setting-wa"
+                placeholder="628xxxxxxxxxx"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tagline</label>
+              <input
+                type="text"
+                class="form-input"
+                value="Premium Smartphone Store"
+                id="setting-tagline"
+              />
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">
+              Simpan Pengaturan
+            </button>
+            <div class="divider"></div>
+            <div
+              class="chart-title"
+              style="margin-bottom: 16px; font-size: 0.85rem"
+            >
+              Data Management
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap">
+              <button class="btn btn-ghost" onclick="resetToDefault()">
+                Reset ke Default
+              </button>
+              <button class="btn btn-danger" onclick="clearAllData()">
+                Hapus Semua Data
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="modal-login">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Login Admin</h2>
+          <button class="modal-close" onclick="closeModal('modal-login')">
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="login-form">
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                id="login-email"
+                class="form-input"
+                placeholder="admin@gadgethub.id"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input
+                type="password"
+                id="login-password"
+                class="form-input"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              style="width: 100%; justify-content: center; padding: 13px"
+            >
+              Masuk →
+            </button>
+            <div
+              style="
+                margin-top: 12px;
+                padding: 11px;
+                background: var(--surface2);
+                border-radius: var(--r-sm);
+                font-size: 0.78rem;
+                color: var(--text2);
+                border: 1px solid var(--border);
+              "
+            >
+              <strong
+                style="color: var(--text); display: block; margin-bottom: 3px"
+                >Demo</strong
+              >
+              admin@gadgethub.id / admin123
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD/EDIT PRODUCT MODAL -->
+    <div class="modal-overlay" id="modal-product-form">
+      <div class="modal modal-lg">
+        <div class="modal-header">
+          <h2 id="product-form-title">Tambah Produk</h2>
+          <button
+            class="modal-close"
+            onclick="closeModal('modal-product-form')"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="product-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nama Produk</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-name"
+                  placeholder="iPhone 15 Pro Max"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Brand</label>
+                <select class="form-input" id="pf-brand">
+                  <option>Apple</option>
+                  <option>Samsung</option>
+                  <option>Xiaomi</option>
+                  <option>OPPO</option>
+                  <option>Vivo</option>
+                  <option>Google</option>
+                  <option>OnePlus</option>
+                  <option>Realme</option>
+                  <option>Nothing</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Harga Asli (Rp)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="pf-original-price"
+                  placeholder="23999000"
+                  min="0"
+                  oninput="autoCalculatePrice()"
+                />
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    color: var(--text3);
+                    margin-top: 4px;
+                  "
+                >
+                  Harga sebelum diskon
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Diskon (%)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="pf-discount"
+                  placeholder="0"
+                  min="0"
+                  max="99"
+                  value="0"
+                  oninput="autoCalculatePrice()"
+                />
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    color: var(--text3);
+                    margin-top: 4px;
+                  "
+                >
+                  Otomatis hitung harga jual
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Harga Jual (Rp)</label>
+                <input
+                  type="number"
+                  class="form-input"
+                  id="pf-price"
+                  placeholder="21499000"
+                  required
+                  min="0"
+                />
+                <div
+                  style="
+                    font-size: 0.72rem;
+                    color: var(--text3);
+                    margin-top: 4px;
+                  "
+                  id="price-calculated"
+                >
+                  Akan otomatis terisi
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Status Stok</label>
+                <select class="form-input" id="pf-status">
+                  <option value="ready">Ready Stock</option>
+                  <option value="po">Pre-Order</option>
+                  <option value="sold">Sold Out</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Deskripsi</label>
+              <textarea
+                class="form-input"
+                id="pf-desc"
+                placeholder="Deskripsi lengkap produk..."
+              ></textarea>
+            </div>
+            <div class="divider"></div>
+            <div
+              style="
+                font-size: 0.7rem;
+                font-weight: 800;
+                color: var(--text3);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                margin-bottom: 16px;
+              "
+            >
+              Spesifikasi
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Layar</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-layar"
+                  placeholder='6.7" OLED 120Hz'
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Prosesor</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-prosesor"
+                  placeholder="Snapdragon 8 Gen 3"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">RAM</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-ram"
+                  placeholder="12GB"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Storage</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-storage"
+                  placeholder="256GB"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Kamera</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-kamera"
+                  placeholder="50MP + 12MP + 12MP"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Baterai</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-baterai"
+                  placeholder="5000 mAh"
+                />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">OS</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-os"
+                  placeholder="Android 14"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Warna</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="pf-warna"
+                  placeholder="Midnight Black"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">URL Gambar Produk (Maks. 5)</label>
+              <div id="images-container"></div>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                onclick="addImageField()"
+                id="add-image-btn"
+                style="margin-top: 8px"
+              >
+                + Tambah Gambar
+              </button>
+              <div
+                style="
+                  margin-top: 12px;
+                  padding: 12px;
+                  background: var(--surface2);
+                  border-radius: var(--r-sm);
+                  border: 1px solid var(--border);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 90px;
+                  overflow-x: auto;
+                "
+                id="images-preview"
+              >
+                <span style="font-size: 1.8rem; color: var(--text3)">📸</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">URL Video Produk (Opsional)</label>
+              <input
+                type="url"
+                class="form-input"
+                id="pf-video-url"
+                placeholder="https://youtube.com/watch?v=... atau URL video MP4"
+              />
+              <div
+                style="
+                  margin-top: 12px;
+                  padding: 12px;
+                  background: var(--surface2);
+                  border-radius: var(--r-sm);
+                  border: 1px solid var(--border);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 90px;
+                "
+                id="video-preview"
+              >
+                <span style="font-size: 1.8rem; color: var(--text3)">🎬</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg"
+                style="flex: 1; justify-content: center"
+                id="pf-submit-btn"
+              >
+                + Tambah Produk
+              </button>
+              <button
+                type="button"
+                class="btn btn-ghost btn-lg"
+                onclick="closeModal('modal-product-form')"
+              >
+                Batal
+              </button>
+            </div>
+            <input type="hidden" id="pf-edit-id" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="app.js"></script>
+    <script>
+      let selectedImage = "";
+      let editingId = null;
+      let imageFields = [];
+
+      function addImageField() {
+        if (imageFields.length >= 5) {
+          toast("Maksimal 5 gambar", "warning");
+          return;
+        }
+        imageFields.push(`image-field-${Date.now()}`);
+        renderImageFields();
+      }
+
+      function removeImageField(fieldId) {
+        imageFields = imageFields.filter((f) => f !== fieldId);
+        renderImageFields();
+      }
+
+      function renderImageFields() {
+        const container = document.getElementById("images-container");
+        container.innerHTML = imageFields
+          .map(
+            (fieldId) => `
+      <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+        <input type="url" class="form-input" placeholder="https://example.com/image.png" id="${fieldId}" oninput="updateImagesPreview()" style="flex:1;">
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeImageField('${fieldId}')">✕</button>
+      </div>
+    `,
+          )
+          .join("");
+        document.getElementById("add-image-btn").style.display =
+          imageFields.length >= 5 ? "none" : "";
+      }
+
+      function updateImagesPreview() {
+        const preview = document.getElementById("images-preview");
+        const urls = imageFields
+          .map((f) => document.getElementById(f)?.value)
+          .filter((v) => v);
+        if (urls.length === 0) {
+          preview.innerHTML =
+            '<span style="font-size:1.8rem;color:var(--text3);">📸</span>';
+          return;
+        }
+        preview.innerHTML =
+          `<div style="display:flex;gap:8px;overflow-x:auto;padding:4px;width:100%;">` +
+          urls
+            .map(
+              (
+                url,
+              ) => `<div style="flex-shrink:0;width:100px;height:80px;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border);">
+        <img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--surface3);font-size:0.65rem;color:var(--red);>Error</div>'">
+      </div>`,
+            )
+            .join("") +
+          `</div>`;
+      }
+
+      function updateVideoPreview() {
+        const videoUrl = document.getElementById("pf-video-url").value;
+        const preview = document.getElementById("video-preview");
+        if (!videoUrl) {
+          preview.innerHTML =
+            '<span style="font-size:1.8rem;color:var(--text3);">🎬</span>';
+          return;
+        }
+        if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+          let videoId = videoUrl.includes("youtube.com")
+            ? new URL(videoUrl).searchParams.get("v")
+            : videoUrl.split("/").pop();
+          preview.innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${videoId}" style="border:none;border-radius:4px;" allowfullscreen></iframe>`;
+        } else {
+          preview.innerHTML = `<video src="${videoUrl}" controls style="max-width:100%;max-height:200px;border-radius:4px;"></video>`;
+        }
+      }
+
+      function autoCalculatePrice() {
+        const originalPrice = parseFloat(
+          document.getElementById("pf-original-price").value,
+        );
+        const discount =
+          parseFloat(document.getElementById("pf-discount").value) || 0;
+        const priceInput = document.getElementById("pf-price");
+        const label = document.getElementById("price-calculated");
+        if (originalPrice > 0) {
+          const calculated = Math.round(originalPrice * (1 - discount / 100));
+          priceInput.value = calculated;
+          label.textContent =
+            discount > 0
+              ? `Hemat ${formatRp(originalPrice - calculated)} (${discount}%)`
+              : "Harga = Harga Asli";
+        }
+      }
+
+      function switchPage(page, el) {
+        document
+          .querySelectorAll(".admin-section")
+          .forEach((s) => s.classList.remove("active"));
+        document
+          .querySelectorAll(".sidebar-item")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("page-" + page).classList.add("active");
+        if (el) el.classList.add("active");
+        if (page === "overview") renderOverview();
+        if (page === "products") renderProductsTable();
+        if (page === "sales") renderSalesPage();
+      }
+
+      function switchPageBtn(page) {
+        const btn = document.querySelector(`.sidebar-item[onclick*="${page}"]`);
+        switchPage(page, btn);
+      }
+
+      function checkAccess() {
+        if (!GH.currentUser || GH.currentUser.role !== "admin") {
+          document.getElementById("admin-content").style.display = "none";
+          document.getElementById("access-denied-screen").style.display = "";
+        } else {
+          document.getElementById("admin-content").style.display = "flex";
+          document.getElementById("access-denied-screen").style.display =
+            "none";
+          document.getElementById("nav-user-name").textContent =
+            GH.currentUser.name.split(" ")[0];
+          document.getElementById("nav-user-initial").textContent =
+            GH.currentUser.name[0];
+          renderOverview();
+          renderProductsTable();
+          document.getElementById("badge-count").textContent =
+            GH.products.length;
+        }
+      }
+
+      function renderOverview() {
+        const totalRevenue = GH.sales.reduce((a, s) => a + s.revenue, 0);
+        const totalOrders = GH.sales.reduce((a, s) => a + s.orders, 0);
+        const totalProducts = GH.products.length;
+        const readyProducts = GH.products.filter(
+          (p) => p.status === "ready",
+        ).length;
+
+        const now = new Date();
+        document.getElementById("current-date").textContent =
+          now.toLocaleDateString("id-ID", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        document.getElementById("overview-greeting").textContent =
+          `Selamat datang, ${GH.currentUser?.name?.split(" ")[0] || "Admin"}`;
+
+        document.getElementById("stats-grid").innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value cyan">${formatRp(totalRevenue)}</div>
+        <div class="stat-change">Dari ${GH.sales.length} bulan data</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Pesanan</div>
+        <div class="stat-value purple">${totalOrders}</div>
+        <div class="stat-change">Semua waktu</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Produk</div>
+        <div class="stat-value green">${totalProducts}</div>
+        <div class="stat-change">${readyProducts} ready stock</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg per Order</div>
+        <div class="stat-value red">${totalOrders > 0 ? formatRp(Math.round(totalRevenue / totalOrders)) : "Rp 0"}</div>
+        <div class="stat-change">Per transaksi</div>
+      </div>
+    `;
+
+        renderBarChart("revenue-chart", GH.sales, "revenue");
+        renderTopProducts();
+        renderProductSummary();
+      }
+
+      function renderBarChart(containerId, data, key) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        const maxVal = Math.max(...data.map((d) => d[key]));
+        container.innerHTML = data
+          .map((d) => {
+            const pct = maxVal > 0 ? (d[key] / maxVal) * 145 : 0;
+            const label = formatMonth(d.date);
+            const val =
+              key === "revenue" ? formatRp(d[key]) : d[key] + " pesanan";
+            return `<div class="bar-group">
+        <div class="bar-fill" style="height:${pct}px">
+          <div class="bar-tooltip">${label}<br>${val}</div>
+        </div>
+        <span class="bar-label">${label.split(" ")[0]}</span>
+      </div>`;
+          })
+          .join("");
+      }
+
+      function renderTopProducts() {
+        const sorted = [...GH.products]
+          .sort((a, b) => (b.sales || 0) - (a.sales || 0))
+          .slice(0, 5);
+        const rankClass = ["gold", "silver", "bronze", "", ""];
+        document.getElementById("top-products-list").innerHTML = sorted
+          .map(
+            (p, i) => `
+      <div class="top-product-item">
+        <div class="rank-badge ${rankClass[i]}">${i + 1}</div>
+        <div class="top-emoji">${p.image && (p.image.startsWith("http") || p.image.startsWith("/")) ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">` : p.image}</div>
+        <div class="top-product-info">
+          <div class="top-product-name">${p.name}</div>
+          <div class="top-product-meta">${p.sales || 0} terjual · ${formatRp(p.price)}</div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function renderProductSummary() {
+        const ready = GH.products.filter((p) => p.status === "ready").length;
+        const po = GH.products.filter((p) => p.status === "po").length;
+        const sold = GH.products.filter((p) => p.status === "sold").length;
+        const totalSales = GH.products.reduce((a, p) => a + (p.sales || 0), 0);
+        document.getElementById("product-summary").innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+        ${[
+          ["Ready Stock", ready, "green"],
+          ["Pre-Order", po, "amber"],
+          ["Sold Out", sold, "red"],
+          ["Total Terjual", totalSales, "cyan"],
+        ]
+          .map(
+            ([label, val, color]) => `
+          <div style="padding:16px;background:var(--surface2);border-radius:var(--r);border:1px solid var(--border);text-align:center;">
+            <div style="font-size:1.4rem;font-weight:800;letter-spacing:-0.04em;color:var(--${color === "cyan" ? "accent-light" : color === "green" ? "green" : color === "red" ? "red" : "amber"});">${val}</div>
+            <div style="font-size:0.7rem;color:var(--text3);margin-top:4px;font-weight:600;">${label}</div>
+          </div>
+        `,
+          )
+          .join("")}
+      </div>
+    `;
+      }
+
+      function renderProductsTable() {
+        document.getElementById("badge-count").textContent = GH.products.length;
+        const tbody = document.getElementById("products-table-body");
+        if (!tbody) return;
+        tbody.innerHTML =
+          GH.products
+            .map(
+              (p) => `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:11px;">
+            <div class="product-img-sm" style="background:${p.color || "var(--surface3)"};">
+              ${p.image && (p.image.startsWith("http") || p.image.startsWith("/")) ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:5px;">` : p.image}
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--text);font-size:0.83rem;">${p.name}</div>
+              <div style="font-size:0.72rem;color:var(--text3);margin-top:1px;">${p.brand}</div>
+            </div>
+          </div>
+        </td>
+        <td><code style="font-size:0.72rem;color:var(--accent-light);background:var(--accent-dim);padding:2px 7px;border-radius:5px;">${p.id}</code></td>
+        <td>
+          <div style="font-weight:700;color:var(--text);font-size:0.83rem;">${formatRp(p.price)}</div>
+          ${p.discount > 0 ? `<div style="font-size:0.7rem;color:var(--text3);text-decoration:line-through;">${formatRp(p.originalPrice)}</div>` : ""}
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:5px;">
+            <input type="number" class="discount-input" value="${p.discount || 0}" min="0" max="99" onchange="quickUpdateDiscount('${p.id}', this.value)">
+            <span style="font-size:0.72rem;color:var(--text3);">%</span>
+          </div>
+        </td>
+        <td>
+          <select class="inline-select" onchange="quickUpdateStatus('${p.id}', this.value)">
+            <option value="ready" ${p.status === "ready" ? "selected" : ""}>Ready</option>
+            <option value="po" ${p.status === "po" ? "selected" : ""}>Pre-Order</option>
+            <option value="sold" ${p.status === "sold" ? "selected" : ""}>Sold Out</option>
+          </select>
+        </td>
+        <td><span style="font-weight:700;color:var(--text);font-size:0.83rem;">${p.sales || 0}</span></td>
+        <td>
+          <div class="table-actions">
+            <button class="btn btn-ghost btn-sm" onclick="openEditProduct('${p.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="confirmDelete('${p.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `,
+            )
+            .join("") ||
+          `<tr><td colspan="7"><div class="admin-empty">Belum ada produk</div></td></tr>`;
+      }
+
+      function quickUpdateStatus(id, status) {
+        updateProduct(id, { status });
+        toast(`Status diperbarui: ${status}`, "success");
+        renderOverview();
+      }
+
+      function quickUpdateDiscount(id, disc) {
+        const d = parseInt(disc) || 0;
+        const p = GH.products.find((pr) => pr.id === id);
+        if (!p) return;
+        const newPrice =
+          d > 0 ? Math.round(p.originalPrice * (1 - d / 100)) : p.originalPrice;
+        updateProduct(id, { discount: d, price: newPrice });
+        toast(`Diskon diperbarui: ${d}%`, "success");
+        setTimeout(renderProductsTable, 300);
+      }
+
+      function confirmDelete(id) {
+        const p = GH.products.find((pr) => pr.id === id);
+        if (!p) return;
+        if (confirm(`Hapus produk "${p.name}"?`)) {
+          deleteProduct(id);
+          renderProductsTable();
+          renderOverview();
+          toast("Produk dihapus", "success");
+        }
+      }
+
+      function openAddProduct() {
+        editingId = null;
+        imageFields = [`image-field-${Date.now()}`];
+        document.getElementById("product-form-title").textContent =
+          "Tambah Produk";
+        document.getElementById("pf-submit-btn").textContent =
+          "+ Tambah Produk";
+        document.getElementById("product-form").reset();
+        document.getElementById("pf-discount").value = 0;
+        document.getElementById("pf-video-url").value = "";
+        document.getElementById("video-preview").innerHTML =
+          '<span style="font-size:1.8rem;color:var(--text3);">🎬</span>';
+        renderImageFields();
+        document.getElementById("images-preview").innerHTML =
+          '<span style="font-size:1.8rem;color:var(--text3);">📸</span>';
+        openModal("modal-product-form");
+      }
+
+      function openEditProduct(id) {
+        const p = GH.products.find((pr) => pr.id === id);
+        if (!p) return;
+        editingId = id;
+        imageFields =
+          p.images && p.images.length > 0
+            ? p.images.map((_, i) => `image-field-edit-${i}`)
+            : [`image-field-${Date.now()}`];
+        document.getElementById("product-form-title").textContent =
+          "Edit Produk";
+        document.getElementById("pf-submit-btn").textContent =
+          "Simpan Perubahan";
+        document.getElementById("pf-edit-id").value = id;
+        document.getElementById("pf-name").value = p.name;
+        document.getElementById("pf-brand").value = p.brand;
+        document.getElementById("pf-price").value = p.price;
+        document.getElementById("pf-original-price").value = p.originalPrice;
+        document.getElementById("pf-discount").value = p.discount || 0;
+        document.getElementById("pf-status").value = p.status;
+        document.getElementById("pf-desc").value = p.desc || "";
+        document.getElementById("pf-layar").value = p.specs?.layar || "";
+        document.getElementById("pf-prosesor").value = p.specs?.prosesor || "";
+        document.getElementById("pf-ram").value = p.specs?.ram || "";
+        document.getElementById("pf-storage").value = p.specs?.storage || "";
+        document.getElementById("pf-kamera").value = p.specs?.kamera || "";
+        document.getElementById("pf-baterai").value = p.specs?.baterai || "";
+        document.getElementById("pf-os").value = p.specs?.os || "";
+        document.getElementById("pf-warna").value = p.specs?.warna || "";
+        document.getElementById("pf-video-url").value = p.videoUrl || "";
+        if (p.videoUrl) updateVideoPreview();
+        renderImageFields();
+        if (p.images && p.images.length > 0) {
+          p.images.forEach((img, i) => {
+            const f = document.getElementById(imageFields[i]);
+            if (f) f.value = img;
+          });
+        }
+        updateImagesPreview();
+        autoCalculatePrice();
+        openModal("modal-product-form");
+      }
+
+      document
+        .getElementById("product-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const images = imageFields
+            .map((f) => document.getElementById(f)?.value)
+            .filter((v) => v);
+          const videoUrl = document.getElementById("pf-video-url").value || "";
+          if (images.length === 0) {
+            toast("Masukkan minimal 1 URL gambar", "error");
+            return;
+          }
+          const data = {
+            name: document.getElementById("pf-name").value,
+            brand: document.getElementById("pf-brand").value,
+            price: document.getElementById("pf-price").value,
+            originalPrice:
+              document.getElementById("pf-original-price").value ||
+              document.getElementById("pf-price").value,
+            discount: document.getElementById("pf-discount").value,
+            status: document.getElementById("pf-status").value,
+            desc: document.getElementById("pf-desc").value,
+            images,
+            videoUrl,
+            image: images[0],
+            layar: document.getElementById("pf-layar").value,
+            prosesor: document.getElementById("pf-prosesor").value,
+            ram: document.getElementById("pf-ram").value,
+            storage: document.getElementById("pf-storage").value,
+            kamera: document.getElementById("pf-kamera").value,
+            baterai: document.getElementById("pf-baterai").value,
+            os: document.getElementById("pf-os").value,
+            warna: document.getElementById("pf-warna").value,
+          };
+          if (editingId) {
+            updateProduct(editingId, {
+              name: data.name,
+              brand: data.brand,
+              price: parseInt(data.price),
+              originalPrice: parseInt(data.originalPrice),
+              discount: parseInt(data.discount),
+              status: data.status,
+              desc: data.desc,
+              images: data.images,
+              videoUrl: data.videoUrl,
+              image: data.image,
+              specs: {
+                layar: data.layar,
+                prosesor: data.prosesor,
+                ram: data.ram,
+                storage: data.storage,
+                kamera: data.kamera,
+                baterai: data.baterai,
+                os: data.os,
+                warna: data.warna,
+              },
+            });
+            toast("Produk berhasil diperbarui", "success");
+          } else {
+            addProduct(data);
+            toast("Produk baru berhasil ditambahkan", "success");
+          }
+          closeModal("modal-product-form");
+          renderProductsTable();
+          renderOverview();
+        });
+
+      function renderSalesPage() {
+        const totalRevenue = GH.sales.reduce((a, s) => a + s.revenue, 0);
+        const totalOrders = GH.sales.reduce((a, s) => a + s.orders, 0);
+        document.getElementById("sales-stats-grid").innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total Revenue</div><div class="stat-value cyan">${formatRp(totalRevenue)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Pesanan</div><div class="stat-value purple">${totalOrders}</div></div>
+      <div class="stat-card"><div class="stat-label">Bulan Terbaik</div><div class="stat-value green">${formatMonth(GH.sales.reduce((a, b) => (b.revenue > a.revenue ? b : a)).date)}</div></div>
+    `;
+        renderBarChart("orders-chart", GH.sales, "orders");
+        document.getElementById("sales-table-body").innerHTML = [...GH.sales]
+          .reverse()
+          .map(
+            (s) => `
+      <tr>
+        <td><strong style="color:var(--text);">${formatMonth(s.date)}</strong></td>
+        <td>${s.orders} pesanan</td>
+        <td><strong style="color:var(--accent-light);">${formatRp(s.revenue)}</strong></td>
+        <td>${s.orders > 0 ? formatRp(Math.round(s.revenue / s.orders)) : "-"}</td>
+      </tr>
+    `,
+          )
+          .join("");
+      }
+
+      function saveSettings() {
+          const name = document.getElementById("setting-name").value.trim();
+          const wa = document.getElementById("setting-wa").value.trim();
+          const tagline = document.getElementById("setting-tagline").value.trim();
+
+           if (wa) GH.waNumber = wa;
+           if (name) GH.storeName = name;
+           if (tagline) GH.tagline = tagline;
+
+           updateWhatsAppButtons();
+
+  // 🔥 SIMPAN KE LOCAL STORAGE
+         store.set("gh_settings", {
+         waNumber: GH.waNumber,
+         storeName: GH.storeName,
+         tagline: GH.tagline,
+     });
+
+      toast("Pengaturan berhasil disimpan!", "success");
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = store.get("gh_settings");
+
+  if (saved) {
+    GH.waNumber = saved.waNumber || GH.waNumber;
+    GH.storeName = saved.storeName || GH.storeName;
+    GH.tagline = saved.tagline || GH.tagline;
+
+    // isi kembali ke input
+    document.getElementById("setting-wa").value = GH.waNumber;
+    document.getElementById("setting-name").value = GH.storeName;
+    document.getElementById("setting-tagline").value = GH.tagline;
+  }
+
+  checkAccess();
+});
+
+function getWhatsAppLink(message = "Halo Admin, saya tertarik dengan produk Anda") {
+  const number = GH.waNumber || "6281234567890";
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${number}?text=${encodedMessage}`;
+}
+
+function updateWhatsAppButtons() {
+  const waBtn = document.getElementById("wa-button");
+
+  if (waBtn) {
+    waBtn.href = getWhatsAppLink();
+    waBtn.target = "_blank";
+  }
+}
+
+      function resetToDefault() {
+        if (confirm("Reset semua produk ke data default?")) {
+          store.set("gh_products", GH.defaultProducts);
+          GH.products = [...GH.defaultProducts];
+          renderProductsTable();
+          renderOverview();
+          toast("Produk direset ke default", "success");
+        }
+      }
+
+      function clearAllData() {
+        if (confirm("Hapus SEMUA data? Tidak bisa dibatalkan!")) {
+          localStorage.clear();
+          toast("Semua data dihapus...", "info");
+          setTimeout(() => location.reload(), 1000);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        checkAccess();
+      });
+    </script>
+  </body>
+</html>
